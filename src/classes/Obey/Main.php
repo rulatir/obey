@@ -316,7 +316,9 @@ class Main
         $outputFile = $unit->getOutputFile();
         $sequence = $this->getParser()->parseFile($inputFile);
         $output = $this->renderer->render($this->getParser(), $sequence);
-        @mkdir(dirname($outputFile), 0755, true);
+        if (!is_dir($dir = dirname($outputFile))) {
+            @mkdir($dir, 0755, true);
+        }
         file_put_contents($outputFile, $output);
     }
 
