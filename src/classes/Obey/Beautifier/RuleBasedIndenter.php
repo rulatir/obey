@@ -82,7 +82,7 @@ class RuleBasedIndenter extends Beautifier
 
     protected function classify($line) : array
     {
-        foreach ($$this->rules as $regex=>$indentOp) {
+        foreach ($this->rules as $regex=>$indentOp) {
             if (preg_match("/".$regex."/", $line)) {
                 return $indentOp;
             }
