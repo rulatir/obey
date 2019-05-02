@@ -59,6 +59,20 @@ return [
         'proxy/sites/proxy/locations/*.php',
         'proxy/sites/proxy/servers/*.php'
     ],
+
+    /*
+     * importPaths
+     * Array of import search paths. When resolving import('foo/bar'), a candidate file path
+     * will be generated from each <entry>:
+     *  - <rootDir>/<entry>/foo/bar.php (if <entry> is a relative path path)
+     *  - <entry>/foo/bar.php (if <entry> is an absolute path)
+     * 
+     * Default: [ 'include' ]
+     */    
+    'importPaths' => [
+        'include',                  //relative to rootDir
+        '/usr/share/obey/include'   //absolute
+    ],
     
     /*
      * outputNameTemplate
