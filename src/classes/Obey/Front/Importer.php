@@ -35,17 +35,13 @@ class Importer
      * @param string $name
      * @throws RuntimeException
      */
-    public function import(string $name)
+    public function import(string $name) : void
     {
-        foreach ($this->getImportPaths() as $importPath) {
-            $file = Path::cat($this->getRootDir(), $importPath, "{$name}.php");
-            if ($this->getObtainer()->incl($file)) {
-                return;
-            }
+        if (Path::isAbsolute($name)) {
+            $this->importAbsolute($name);
+        } else {
+            $this->importRelative($name);
         }
-        throw new RuntimeException(
-            "Template \"{$name}\" not found in (".implode(":", $this->getImportPaths()).")"
-        );
     }
 
     /**
@@ -86,5 +82,36 @@ class Importer
     public function getObtainer(): Obtainer
     {
         return $this->obtainer;
+    }
+
+    /**
+     * @param string $name
+     * @throws RuntimeException
+     */
+    protected function importAbsolute(string $name): void
+    {
+        if (!$this->getObtainer()->incl("{$name}.php")) {
+            throw new RuntimeException("Template \"{$name}\" not found");
+        }
+    }
+
+    /**
+     * @param string $name
+     * @throws RuntimeException
+     */
+    protected function importRelative(string $name) : void
+    {
+        foreach ($importPaths = $this->getImportPaths() as $importPath) {
+            $segments = [$importPath, "{$name}.php"];
+            if (!Path::isAbsolute($importPath)) {
+                array_unshift($segments, $this->getRootDir());
+            }
+            if ($this->getObtainer()->incl(Path::cat(... $segments))) {
+                return;
+            }
+        }
+        throw new RuntimeException(
+            "Template \"{$name}\" not found in (" . implode(":", $importPaths) . ")"
+        );
     }
 }
