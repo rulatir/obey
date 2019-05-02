@@ -5,7 +5,7 @@ namespace Obey\Front\Obtainer;
 
 use Obey\Front\Obtainer;
 
-abstract class DataURLObtainer extends Obtainer
+abstract class PreprocessingFileObtainer extends FileObtainer
 {
     private $cache = [];
 
@@ -13,6 +13,7 @@ abstract class DataURLObtainer extends Obtainer
     {
         return require $this->cache[$fname] ?? $this->cache[$fname] = $this->load($fname);
     }
+
     protected function load($fname)
     {
         return "data://text/plain;base64,".base64_encode($this->convert($fname));

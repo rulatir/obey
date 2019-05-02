@@ -3,7 +3,7 @@
 
 namespace Obey\Front\Obtainer;
 
-class NewlineReinserter extends DataURLObtainer
+class NewlineReinserter extends PreprocessingFileObtainer
 {
     protected function onCompoundToken(array $token, string &$value)
     {
