@@ -290,7 +290,6 @@ class Main
     {
         $defaults = $this->getDefaults();
         $normalized = array_merge($defaults, array_intersect_key($options, $defaults));
-        $normalized['importPaths'] = array_merge($defaults['importPaths'], $options['importPaths'] ?? []);
         if (isset($normalized['setupFile']) && $normalized['setupFile'] !== ($defaults['setupFile'] ?? null)) {
             /** @noinspection PhpIncludeInspection */
             $normalized = array_intersect_key(
