@@ -52,3 +52,10 @@ function import($name) : string
     into();
     return "";
 }
+
+function req($name) : string
+{
+    ob_start();
+    Main::getInstance()->getImporter()->import($name);
+    return "\n".ob_get_clean()."\n";
+}

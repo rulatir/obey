@@ -6,6 +6,7 @@ namespace Obey;
 use Obey\Front\Obtainer\DirectObtainer;
 use Obey\Front\Obtainer\NewlineReinserter;
 use Obey\Renderer\OutdentingRenderer;
+use Obey\Renderer\PreservingRenderer;
 use Obey\Renderer\SmartRenderer;
 
 class Style
@@ -29,6 +30,10 @@ class Style
                     "^\\}\$" => [-1,0],
                 ]
             ]
+        ],
+        'none' => [
+            'obtainer' => NewlineReinserter::class,
+            'renderer' => PreservingRenderer::class
         ],
         'default' => 'smart',
         'dockerfile' => 'outdent',

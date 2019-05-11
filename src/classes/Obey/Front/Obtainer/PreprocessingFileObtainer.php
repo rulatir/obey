@@ -35,7 +35,7 @@ abstract class PreprocessingFileObtainer extends FileObtainer
                 $result[] = $value;
             }
         }
-        $converted = trim(implode("", $result));
+        $converted = implode("", $result);
         return $converted;
     }
 
