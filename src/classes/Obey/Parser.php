@@ -40,10 +40,10 @@ class Parser
         static::$instance = $parser;
     }
 
-    public function beginInto(string $name)
+    public function beginInto(string $name, bool $reverse = false)
     {
         $this->flushText();
-        $this->append($into = new Into($name));
+        $this->append($into = new Into($name, $reverse));
         $this->top = $into;
     }
 
@@ -54,8 +54,14 @@ class Parser
         $into = $this->top;
         assert($into instanceof Into, "endInto without beginInto");
         $locus = $this->getLocus($into->getName());
-        foreach ($into->getNodes() as $node) {
-            $locus->append($node);
+        if ($into->isReverse()) {
+            foreach (array_reverse($into->getNodes()) as $node) {
+                $locus->prepend($node);
+            }
+        } else {
+            foreach ($into->getNodes() as $node) {
+                $locus->append($node);
+            }
         }
         $this->top = $into->getParent();
         return $into->getName();
@@ -123,7 +129,7 @@ class Parser
         }
     }
 
-    protected function getLocus(string $name)
+    protected function getLocus(string $name) : Sequence
     {
         return $this->loci[$name] ?? ($this->loci[$name] = new Sequence());
     }

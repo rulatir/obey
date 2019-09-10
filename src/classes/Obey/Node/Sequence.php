@@ -14,6 +14,11 @@ class Sequence extends Node
         $this->nodes[]=$node;
     }
 
+    public function prepend(Node $node)
+    {
+        array_unshift($this->nodes, $node);
+    }
+
     /**
      * @return Node[]
      */

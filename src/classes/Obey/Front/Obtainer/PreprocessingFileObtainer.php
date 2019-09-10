@@ -9,9 +9,14 @@ abstract class PreprocessingFileObtainer extends FileObtainer
 {
     private $cache = [];
 
-    public function req(string $fname)
+    public function req(string $fname, bool $once = false)
     {
-        return require $this->cache[$fname] ?? $this->cache[$fname] = $this->load($fname);
+        $dataUrl = $this->cache[$fname] ?? $this->cache[$fname] = $this->load($fname);
+        if ($once) {
+            require_once $dataUrl;
+        } else {
+            require $dataUrl;
+        }
     }
 
     protected function load($fname)

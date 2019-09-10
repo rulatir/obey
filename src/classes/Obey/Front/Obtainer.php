@@ -9,12 +9,12 @@ abstract class Obtainer
     {
     }
 
-    public function incl(string $fname) : bool
+    public function incl(string $fname, bool $once=false) : bool
     {
         if (!$this->exists($fname)) {
             return false;
         }
-        $this->req($fname);
+        $this->req($fname, $once);
         return true;
     }
     abstract public function req(string $fname);

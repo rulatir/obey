@@ -17,6 +17,20 @@ function into($name=false) : string
     return "";
 }
 
+function infront($name = false) : string
+{
+    $parser = Parser::getInstance();
+    if (is_string($name)) {
+        $parser->beginInto($name, true);
+    } elseif (is_bool($name)) {
+        $locusName = $parser->endInto();
+        if (true===$name) {
+            $parser->here($locusName);
+        }
+    }
+    return "";
+}
+
 function given(?string $condition=null) : string
 {
     $parser = Parser::getInstance();
@@ -53,7 +67,22 @@ function import($name) : string
     return "";
 }
 
+function import_once($name) : string
+{
+    into("__IMPORTS__");
+    Main::getInstance()->getImporter()->import($name, true);
+    into();
+    return "";
+}
+
 function req($name) : string
+{
+    ob_start();
+    Main::getInstance()->getImporter()->import($name);
+    return "\n".ob_get_clean()."\n";
+}
+
+function req_once($name) : string
 {
     ob_start();
     Main::getInstance()->getImporter()->import($name);

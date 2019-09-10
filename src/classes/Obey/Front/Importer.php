@@ -33,14 +33,14 @@ class Importer
 
     /**
      * @param string $name
-     * @throws RuntimeException
+     * @param bool $once
      */
-    public function import(string $name) : void
+    public function import(string $name, bool $once=false) : void
     {
         if (Path::isAbsolute($name)) {
-            $this->importAbsolute($name);
+            $this->importAbsolute($name, $once);
         } else {
-            $this->importRelative($name);
+            $this->importRelative($name, $once);
         }
     }
 
@@ -86,27 +86,27 @@ class Importer
 
     /**
      * @param string $name
-     * @throws RuntimeException
+     * @param bool $once
      */
-    protected function importAbsolute(string $name): void
+    protected function importAbsolute(string $name, bool $once=false): void
     {
-        if (!$this->getObtainer()->incl("{$name}.php")) {
+        if (!$this->getObtainer()->incl("{$name}.php", $once)) {
             throw new RuntimeException("Template \"{$name}\" not found");
         }
     }
 
     /**
      * @param string $name
-     * @throws RuntimeException
+     * @param bool $once
      */
-    protected function importRelative(string $name) : void
+    protected function importRelative(string $name, bool $once = false) : void
     {
         foreach ($importPaths = $this->getImportPaths() as $importPath) {
             $segments = [$importPath, "{$name}.php"];
             if (!Path::isAbsolute($importPath)) {
                 array_unshift($segments, $this->getRootDir());
             }
-            if ($this->getObtainer()->incl(Path::cat(... $segments))) {
+            if ($this->getObtainer()->incl(Path::cat(... $segments), $once)) {
                 return;
             }
         }

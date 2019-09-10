@@ -17,10 +17,15 @@ class Into extends Sequence
      * @var int|null
      */
     protected $indent = null;
+    /**
+     * @var bool
+     */
+    private $reverse = false;
 
-    public function __construct(string $name)
+    public function __construct(string $name, bool $reverse = false)
     {
         $this->name = $name;
+        $this->reverse = $reverse;
     }
 
     /**
@@ -53,5 +58,13 @@ class Into extends Sequence
         if ($node instanceof Text && null===$this->getIndent()) {
             $this->setIndent($node->getRealIndent());
         }
+    }
+
+    /**
+     * @return bool
+     */
+    public function isReverse(): bool
+    {
+        return $this->reverse;
     }
 }

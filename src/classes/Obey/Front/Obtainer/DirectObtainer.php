@@ -7,8 +7,12 @@ use Obey\Front\Obtainer;
 
 class DirectObtainer extends FileObtainer
 {
-    public function req(string $fname)
+    public function req(string $fname, bool $once = false)
     {
-        require $fname;
+        if ($once) {
+            require_once $fname;
+        } else {
+            require $fname;
+        }
     }
 }
