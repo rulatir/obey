@@ -315,12 +315,17 @@ class Main
     {
         $inputFile = $unit->getInputFile();
         $outputFile = $unit->getOutputFile();
-        $sequence = $this->getParser()->parseFile($inputFile);
-        $output = $this->renderer->render($this->getParser(), $sequence);
-        if (!is_dir($dir = dirname($outputFile))) {
-            @mkdir($dir, 0755, true);
+        $this->getParser()->setDebugInputFile($inputFile);
+        try {
+            $sequence = $this->getParser()->parseFile($inputFile);
+            $output = $this->renderer->render($this->getParser(), $sequence);
+            if (!is_dir($dir = dirname($outputFile))) {
+                @mkdir($dir, 0755, true);
+            }
+            file_put_contents($outputFile, $output);
+        } finally {
+            $this->getParser()->setDebugInputFile(null);
         }
-        file_put_contents($outputFile, $output);
     }
 
     public function setOptions(array $options): array

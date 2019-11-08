@@ -18,6 +18,9 @@ class Parser
     /** @var Sequence[]  */
     protected $loci=[];
 
+    /** @var null|string  */
+    protected $debugInputFile = null;
+
     protected static $instance = null;
 
     /**
@@ -158,19 +161,32 @@ class Parser
         return $this->top;
     }
 
-    /**
-     * @return Obtainer
-     */
+    /** @return Obtainer */
     public function getObtainer(): Obtainer
     {
         return $this->obtainer;
     }
 
-    /**
-     * @param Obtainer $obtainer
-     */
+    /** @param Obtainer $obtainer */
     public function setObtainer(Obtainer $obtainer): void
     {
         $this->obtainer = $obtainer;
+    }
+
+    /** @return string|null */
+    public function getDebugInputFile(): ?string
+    {
+        return $this->debugInputFile;
+    }
+
+    /** @param string|null $debugInputFile */
+    public function setDebugInputFile(?string $debugInputFile): void
+    {
+        $this->debugInputFile = $debugInputFile;
+    }
+
+    public function templateEndsWith(string $suffix) : bool
+    {
+        return preg_match('/'.preg_quote($suffix,"/").'$/',$this->debugInputFile ?? '');
     }
 }

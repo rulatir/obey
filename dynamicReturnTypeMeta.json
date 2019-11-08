@@ -1,0 +1,29 @@
+{
+  "methodCalls": [
+    {
+      "class": "\\Zuu\\Contracts\\Container\\Container",
+      "method": "fromArray",
+      "position": 0
+    },
+    {
+      "class": "\\Zuu\\Contracts\\Container\\Container",
+      "method": "build",
+      "position": 0
+    },
+    {
+      "class": "\\Zuu\\Contracts\\Container\\Container",
+      "method": "make",
+      "position": 0
+    },
+    {
+      "class": "\\PHPUnit\\Framework\\TestCase",
+      "method": "createMock",
+      "position": 0
+    },
+    {
+      "class": "\\Mockery",
+      "method": "mock",
+      "position": 0
+    }
+  ]
+}
