@@ -22,48 +22,40 @@ class Main
         'inputPattern',
         'outputNameTemplate',
         'inputs',
-        'style'
+        'style',
+        'op'
     ];
-    /** @var Main|null */
-    protected static $instance=null;
 
-    /** @var array */
-    protected $argv;
+    protected static ?Main $instance=null;
 
-    /** @var array */
-    protected $options;
+    protected array $argv;
 
-    /** @var string */
-    protected $rootDir;
+    protected array $options;
 
-    /** @var string */
-    protected $setupFile;
+    protected string $rootDir;
 
-    /** @var string */
-    protected $outputDir;
+    protected string $setupFile;
 
-    /** @var string */
-    protected $inputPattern;
+    protected string $outputDir;
 
-    /** @var array */
-    protected $inputs;
+    protected string $inputPattern;
 
-    /** @var array */
-    protected $style;
+    /** @var string[] */
+    protected array $inputs;
+
+    protected array $style;
+
+    protected string $op;
 
     //END options
 
-    /** @var Obtainer */
-    protected $obtainer;
+    protected Obtainer $obtainer;
 
-    /** @var Parser */
-    protected $parser;
+    protected Parser $parser;
 
-    /** @var Importer */
-    protected $importer;
+    protected Importer $importer;
 
-    /** @var Renderer */
-    protected $renderer;
+    protected Renderer $renderer;
 
     public static function run(array $argv)
     {
@@ -243,6 +235,16 @@ class Main
         $this->style = $style;
     }
 
+    public function getOp() : string
+    {
+        return $this->op;
+    }
+
+    public function setOp(string $op)
+    {
+        $this->op = $op;
+    }
+
     public static function req(string $fname)
     {
         return Main::getInstance()->getObtainer()->req($fname);
@@ -311,7 +313,21 @@ class Main
         return $normalized;
     }
 
-    protected function processUnit(Unit $unit)
+    protected function processUnit(Unit $unit) : void
+    {
+        switch($this->getOp()) {
+        case "process":
+            $this->generateOutputForUnit($unit); return;
+        case "list-inputs":
+            echo $unit->getInputFile().PHP_EOL; return;
+        case "list-outputs":
+            echo $unit->getOutputFile().PHP_EOL; return;
+        default:
+            throw new \InvalidArgumentException("Unsupported unit operation \"{$this->getOp()}\"");
+        }
+    }
+
+    protected function generateOutputForUnit(Unit $unit) : void
     {
         $inputFile = $unit->getInputFile();
         $outputFile = $unit->getOutputFile();

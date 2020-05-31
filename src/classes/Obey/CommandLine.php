@@ -19,7 +19,9 @@ class CommandLine
     }
     protected function parseArguments() : array
     {
-        $options = [];
+        $options = [
+            'op' => 'process'
+        ];
         while (count($this->argv)) {
             switch ($opt = array_shift($this->argv)) {
 
@@ -28,6 +30,8 @@ class CommandLine
                 case '-o': $this->assign($options, 'outputDir'); break;
                 case '-n': $this->assign($options, 'outputNameTemplate'); break;
                 case '-s': $this->assign($options, 'style'); break;
+                case '--list-inputs': $options['op'] = 'list-inputs'; break;
+                case '--list-outputs': $options['op'] = 'list-outputs'; break;
                 default: trigger_error("Unsupported option {$opt}", E_USER_ERROR);
             }
         }
