@@ -7,7 +7,8 @@ class PathHelper
 {
     public static function cat(?string ...$segments) : string
     {
-        return implode("/", array_filter($segments, fn($segment) => ""!==trim(strval($segment))));
+        if (!count($segments)) return ".";
+        return rtrim(preg_replace('~/+~','/',implode("/",array_map('trim',$segments))),"/");
     }
     public static function isAbsolute(string $segment) : bool
     {
