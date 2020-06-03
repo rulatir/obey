@@ -5,7 +5,7 @@ namespace Obey;
 
 class CommandLine
 {
-    private $argv;
+    private array $argv;
 
     public function __construct(array $argv)
     {
@@ -30,8 +30,9 @@ class CommandLine
                 case '-o': $this->assign($options, 'outputDir'); break;
                 case '-n': $this->assign($options, 'outputNameTemplate'); break;
                 case '-s': $this->assign($options, 'style'); break;
-                case '--list-inputs': $options['op'] = 'list-inputs'; break;
-                case '--list-outputs': $options['op'] = 'list-outputs'; break;
+                case '--list-inputs': $options['op'] = 'list-inputs'; $this->assign($options,'listRelTo'); break;
+                case '--list-outputs': $options['op'] = 'list-outputs';  $this->assign($options,'listRelTo'); break;
+                case '--oneline': $options['oneline'] = true; break;
                 default: trigger_error("Unsupported option {$opt}", E_USER_ERROR);
             }
         }

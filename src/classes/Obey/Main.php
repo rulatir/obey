@@ -23,7 +23,9 @@ class Main
         'outputNameTemplate',
         'inputs',
         'style',
-        'op'
+        'op',
+        'oneline',
+        'listRelTo'
     ];
 
     protected static ?Main $instance=null;
@@ -46,6 +48,10 @@ class Main
     protected array $style;
 
     protected string $op;
+
+    protected bool $oneline;
+
+    protected ?string $listRelTo;
 
     //END options
 
@@ -240,9 +246,29 @@ class Main
         return $this->op;
     }
 
-    public function setOp(string $op)
+    public function setOp(string $op): void
     {
         $this->op = $op;
+    }
+
+    public function getOneline(): bool
+    {
+        return $this->oneline;
+    }
+
+    public function setOneline(bool $oneline) : void
+    {
+        $this->oneline=$oneline;
+    }
+
+    public function getListRelTo(): string
+    {
+        return $this->listRelTo;
+    }
+
+    public function setListRelTo(string $listRelTo) : void
+    {
+        $this->listRelTo = $listRelTo;
     }
 
     public static function req(string $fname)
@@ -285,6 +311,9 @@ class Main
         $defaults['inputs'] = [$defaults['inputPattern']];
         $defaults['importPaths'] = ['include'];
         $defaults['style'] = 'smart';
+        $defaults['op'] = 'process';
+        $defaults['oneline'] = false;
+        $defaults['listRelTo'] = ".";
         return $defaults;
     }
 
@@ -319,9 +348,15 @@ class Main
         case "process":
             $this->generateOutputForUnit($unit); return;
         case "list-inputs":
-            echo $unit->getInputFile().PHP_EOL; return;
+            echo
+                PathHelper::unprefix($unit->getInputFile(),$this->getListRelTo())
+                .($this->getOneLine() ? " " : PHP_EOL);
+            return;
         case "list-outputs":
-            echo $unit->getOutputFile().PHP_EOL; return;
+            echo
+                PathHelper::unprefix($unit->getOutputFile(),$this->getListRelTo())
+                .($this->getOneLine() ? " " : PHP_EOL);
+            return;
         default:
             throw new \InvalidArgumentException("Unsupported unit operation \"{$this->getOp()}\"");
         }

@@ -5,22 +5,19 @@ namespace Obey\Front;
 
 class Unit
 {
-    /** @var UnitGroup */
-    protected $group;
+    protected UnitGroup $group;
 
-    /** @var string */
-    protected $name;
+    protected string $name;
 
-    /** @var string|null */
-    protected $inputFile;
+    protected ?string $inputFile;
 
-    /** @var string|null */
-    protected $outputFile;
+    protected ?string $outputFile;
 
     public function __construct(UnitGroup $group, string $name)
     {
         $this->group = $group;
         $this->name = $name;
+        $this->inputFile = $this->outputFile = null;
     }
 
     /**
