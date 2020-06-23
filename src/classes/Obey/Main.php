@@ -3,6 +3,7 @@
 namespace Obey;
 
 use Obey\Front\Importer;
+use Obey\Front\InputRecorder;
 use Obey\Front\InputResolver;
 use Obey\Front\Obtainer;
 use Obey\Front\OutputResolver;
@@ -278,7 +279,11 @@ class Main
 
     protected function runInstance()
     {
+        $inputRecorder = null;
         $this->setObtainer(new $this->style['obtainer']());
+        if ('list-inputs'===$this->op) {
+            $this->setObtainer($inputRecorder = new InputRecorder($this->getObtainer()));
+        }
         $this->setImporter(new Importer($this->getObtainer()));
         $this->setParser(new Parser($this->obtainer));
         $this->setRenderer(new $this->style['renderer']());
@@ -297,6 +302,13 @@ class Main
             $inputResolver->resolve($unit);
             $outputResolver->resolve($unit);
             $this->processUnit($unit);
+        }
+        if ('list-inputs'===$this->op) {
+            $inputs = array_map(
+                fn($v) => PathHelper::unprefix($v, $this->getListRelTo()),
+                $inputRecorder->getAllInputs()
+            );
+            echo implode($this->getOneline() ? " " : PHP_EOL, $inputs).PHP_EOL;
         }
     }
 
@@ -348,9 +360,7 @@ class Main
         case "process":
             $this->generateOutputForUnit($unit); return;
         case "list-inputs":
-            echo
-                PathHelper::unprefix($unit->getInputFile(),$this->getListRelTo())
-                .($this->getOneLine() ? " " : PHP_EOL);
+            $this->generateOutputForUnit($unit, false);
             return;
         case "list-outputs":
             echo
@@ -362,18 +372,20 @@ class Main
         }
     }
 
-    protected function generateOutputForUnit(Unit $unit) : void
+    protected function generateOutputForUnit(Unit $unit, bool $writeOutput = true) : void
     {
         $inputFile = $unit->getInputFile();
         $outputFile = $unit->getOutputFile();
         $this->getParser()->setDebugInputFile($inputFile);
         try {
             $sequence = $this->getParser()->parseFile($inputFile);
-            $output = $this->renderer->render($this->getParser(), $sequence);
-            if (!is_dir($dir = dirname($outputFile))) {
-                @mkdir($dir, 0755, true);
+            if ($writeOutput) {
+                $output = $this->renderer->render($this->getParser(), $sequence);
+                if (!is_dir($dir = dirname($outputFile))) {
+                    @mkdir($dir, 0755, true);
+                }
+                file_put_contents($outputFile, $output);
             }
-            file_put_contents($outputFile, $output);
         } finally {
             $this->getParser()->setDebugInputFile(null);
         }
