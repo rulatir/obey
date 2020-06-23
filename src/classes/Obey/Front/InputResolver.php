@@ -19,7 +19,7 @@ class InputResolver
 
     public function resolve(Unit $unit)
     {
-        $inputPattern = Path::cat($this->getRootDir(), $unit->getGroup()->getInputPattern());
+        $inputPattern = Path::norm(Path::cat(getcwd(), $this->getRootDir(), $unit->getGroup()->getInputPattern()));
         $inputFile = str_replace('*', $unit->getName(), $inputPattern);
         $unit->setInputFile($inputFile);
     }

@@ -27,11 +27,12 @@ class OutputResolver
 
     public function resolve(Unit $unit)
     {
-        $outputPattern = Path::cat(
+        $outputPattern = PAth::norm(Path::cat(
+            getcwd(),
             $this->getOutputDir(),
             $unit->getGroup()->getSubDir(),
             $this->getOutputNameTemplate()
-        );
+        ));
         $outputFile = str_replace('{}', $unit->getName(), $outputPattern);
         $unit->setOutputFile($outputFile);
     }

@@ -9,9 +9,14 @@ class PathHelper
     {
         $nonNullFragments = array_filter($fragments,fn($v) => null!==$v);
         if (0===count($nonNullFragments)) return ".";
+        $absoluteTail = [];
+        foreach($nonNullFragments as $fragment) {
+            if (self::isAbsolute($fragment)) $absoluteTail=[$fragment];
+            else $absoluteTail[] = $fragment;
+        }
         $explodedFragments = [
-            self::split($nonNullFragments[0]),
-            ...array_map(fn($fragment) => self::split($fragment,false), array_slice($nonNullFragments,1))
+            self::split($absoluteTail[0]),
+            ...array_map(fn($fragment) => self::split($fragment,false), array_slice($absoluteTail,1))
         ];
         $segments = array_merge(...$explodedFragments);
         if (!count($segments)) return ".";
