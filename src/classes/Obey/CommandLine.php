@@ -32,6 +32,7 @@ class CommandLine
                 case '-s': $this->assign($options, 'style'); break;
                 case '--list-inputs': $options['op'] = 'list-inputs'; $this->assign($options,'listRelTo'); break;
                 case '--list-outputs': $options['op'] = 'list-outputs';  $this->assign($options,'listRelTo'); break;
+                case '--list-patterns': $options['op'] = 'list-patterns'; $this->assign($options, 'listRelTo'); break;
                 case '--oneline': $options['oneline'] = true; break;
                 default: trigger_error("Unsupported option {$opt}", E_USER_ERROR);
             }

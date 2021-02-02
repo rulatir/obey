@@ -2,6 +2,7 @@
 
 namespace Obey;
 
+use InvalidArgumentException;
 use Obey\Front\Importer;
 use Obey\Front\InputRecorder;
 use Obey\Front\InputResolver;
@@ -50,7 +51,7 @@ class Main
 
     protected string $op;
 
-    protected bool $oneline;
+    protected bool $oneLine;
 
     protected ?string $listRelTo;
 
@@ -73,49 +74,31 @@ class Main
         $main->runInstance();
     }
 
-    /**
-     * @return string
-     */
     public function getRootDir(): string
     {
         return $this->rootDir;
     }
 
-    /**
-     * @param string $rootDir
-     */
     public function setRootDir(string $rootDir): void
     {
         $this->rootDir = $rootDir;
     }
 
-    /**
-     * @return string
-     */
     public function getSetupFile(): string
     {
         return $this->setupFile;
     }
 
-    /**
-     * @param string $setupFile
-     */
     public function setSetupFile(string $setupFile): void
     {
         $this->setupFile = $setupFile;
     }
 
-    /**
-     * @return string
-     */
     public function getOutputDir(): string
     {
         return $this->outputDir;
     }
 
-    /**
-     * @param string $outputDir
-     */
     public function setOutputDir(string $outputDir): void
     {
         $this->outputDir = $outputDir;
@@ -126,117 +109,75 @@ class Main
         return self::$instance;
     }
 
-    /**
-     * @return Obtainer
-     */
     public function getObtainer(): Obtainer
     {
         return $this->obtainer;
     }
 
-    /**
-     * @param Obtainer $obtainer
-     */
     public function setObtainer(Obtainer $obtainer): void
     {
         $obtainer->setOptions($this->getStyle()['obtainerOpts']);
         $this->obtainer = $obtainer;
     }
 
-    /**
-     * @return Parser
-     */
     public function getParser(): Parser
     {
         return $this->parser;
     }
 
-    /**
-     * @param Parser $parser
-     */
     public function setParser(Parser $parser): void
     {
         Parser::setInstance($parser);
         $this->parser = $parser;
     }
 
-    /**
-     * @return Importer
-     */
     public function getImporter(): Importer
     {
         return $this->importer;
     }
 
-    /**
-     * @param Importer $importer
-     */
     public function setImporter(Importer $importer): void
     {
         $this->passOptionsTo($importer);
         $this->importer = $importer;
     }
 
-    /**
-     * @return Renderer
-     */
     public function getRenderer(): Renderer
     {
         return $this->renderer;
     }
 
-    /**
-     * @param Renderer $renderer
-     */
     public function setRenderer(Renderer $renderer): void
     {
         $renderer->setOptions($this->getStyle()['rendererOpts']);
         $this->renderer = $renderer;
     }
 
-    /**
-     * @return string
-     */
     public function getInputPattern(): string
     {
         return $this->inputPattern;
     }
 
-    /**
-     * @param string $inputPattern
-     */
     public function setInputPattern(string $inputPattern): void
     {
         $this->inputPattern = $inputPattern;
     }
 
-    /**
-     * @return array
-     */
     public function getInputs(): array
     {
         return $this->inputs;
     }
 
-    /**
-     * @param array $inputs
-     */
     public function setInputs(array $inputs): void
     {
         $this->inputs = $inputs;
     }
 
-    /**
-     * @return array
-     */
     public function getStyle(): array
     {
         return $this->style;
     }
 
-    /**
-     * @param array $style
-     */
     public function setStyle(array $style): void
     {
         $this->style = $style;
@@ -252,14 +193,33 @@ class Main
         $this->op = $op;
     }
 
-    public function getOneline(): bool
+    public function getOneLine(): bool
     {
-        return $this->oneline;
+        return $this->oneLine;
     }
 
-    public function setOneline(bool $oneline) : void
+    public function getSeparatorForListSubcommands(): string
     {
-        $this->oneline=$oneline;
+        return $this->getOneLine() ? " " : PHP_EOL;
+    }
+
+    public function getTerminatorForListSubcommands(): string
+    {
+        return $this->getOneLine() ? "" : PHP_EOL;
+    }
+
+    /**
+     * @param string[] $items
+     * @return string
+     */
+    public function formatList(array $items) : string
+    {
+        return implode($this->getSeparatorForListSubcommands(), $items).$this->getTerminatorForListSubcommands();
+    }
+
+    public function setOneLine(bool $oneLine) : void
+    {
+        $this->oneLine=$oneLine;
     }
 
     public function getListRelTo(): string
@@ -279,6 +239,10 @@ class Main
 
     protected function runInstance()
     {
+        if ('list-patterns'===$this->op) {
+            echo $this->formatList($this->inputs);
+            return;
+        }
         $inputRecorder = null;
         $this->setObtainer(new $this->style['obtainer']());
         if ('list-inputs'===$this->op) {
@@ -288,6 +252,7 @@ class Main
         $this->setParser(new Parser($this->obtainer));
         $this->setRenderer(new $this->style['renderer']());
 
+        /** @var UnitEnumerator $enumerator */
         $enumerator = $this->passOptionsTo(new UnitEnumerator());
         foreach ($this->inputs as $inputPattern) {
             $enumerator->addUnitGroup($inputPattern);
@@ -297,18 +262,18 @@ class Main
 
         require_once __DIR__."/../../directives.php";
 
-        /** @var Unit $unit */
         foreach ($enumerator->all() as $unit) {
             $inputResolver->resolve($unit);
             $outputResolver->resolve($unit);
             $this->processUnit($unit);
         }
+
         if ('list-inputs'===$this->op) {
             $inputs = array_map(
                 fn($v) => PathHelper::unprefix($v, $this->getListRelTo()),
                 $inputRecorder->getAllInputs()
             );
-            echo implode($this->getOneline() ? " " : PHP_EOL, $inputs).PHP_EOL;
+            echo $this->formatList($inputs);
         }
     }
 
@@ -368,7 +333,7 @@ class Main
                 .($this->getOneLine() ? " " : PHP_EOL);
             return;
         default:
-            throw new \InvalidArgumentException("Unsupported unit operation \"{$this->getOp()}\"");
+            throw new InvalidArgumentException("Unsupported unit operation \"{$this->getOp()}\"");
         }
     }
 

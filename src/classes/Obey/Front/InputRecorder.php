@@ -7,7 +7,9 @@ namespace Obey\Front;
 class InputRecorder extends Obtainer
 {
     private Obtainer $obtainer;
-    private $inputs = [];
+
+    /** @var bool[] */
+    private array $inputs = [];
 
     public function __construct(Obtainer $obtainer)
     {
@@ -34,6 +36,4 @@ class InputRecorder extends Obtainer
     {
         $this->inputs[stream_resolve_include_path($fname)]=true;
     }
-
-
 }

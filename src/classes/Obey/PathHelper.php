@@ -47,7 +47,7 @@ class PathHelper
     }
 
     /**
-     * @param string $path
+     * @param string|null $path
      * @param bool $allowAbsolute
      * @return string[]
      */
@@ -55,7 +55,7 @@ class PathHelper
     {
         $trimmedPath = trim($path);
         if (""===$trimmedPath) return [];
-        $wasAbsolute = $allowAbsolute && "/"===$trimmedPath[0] ?? null;
+        $wasAbsolute = $allowAbsolute && "/"===($trimmedPath[0] ?? null);
         $result = array_filter(explode("/",$trimmedPath), fn($v) => ""!==trim($v));
         return $wasAbsolute ? ["",...$result] : $result;
     }

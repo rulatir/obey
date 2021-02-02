@@ -57,103 +57,68 @@ class Style
         'rendererOpts'
     ];
 
-    private static $presets;
+    private static array $presets;
 
-    /** @var int */
-    private $tabSize;
+    private int $tabSize;
 
-    /** @var array */
-    private $obtainerOpts;
+    private array $obtainerOpts;
 
-    /** @var array */
-    private $rendererOpts;
+    private array $rendererOpts;
 
-    /** @var string */
-    private $obtainer;
+    private string $obtainer;
 
-    /** @var string */
-    private $renderer;
+    private string $renderer;
 
     public function __construct($preset)
     {
         $this->setOptions(static::resolvePreset($preset));
     }
 
-    /**
-     * @return int
-     */
     public function getTabSize(): int
     {
         return $this->tabSize;
     }
 
-    /**
-     * @param int $tabSize
-     */
     public function setTabSize(int $tabSize): void
     {
         $this->tabSize = $tabSize;
     }
 
-    /**
-     * @return array
-     */
     public function getObtainerOpts(): array
     {
         return $this->obtainerOpts;
     }
 
-    /**
-     * @param array $obtainerOpts
-     */
     public function setObtainerOpts(array $obtainerOpts): void
     {
         $this->obtainerOpts = $obtainerOpts;
     }
 
-    /**
-     * @return array
-     */
     public function getRendererOpts(): array
     {
         return $this->rendererOpts;
     }
 
-    /**
-     * @param array $rendererOpts
-     */
     public function setRendererOpts(array $rendererOpts): void
     {
         $this->rendererOpts = $rendererOpts;
     }
 
-    /**
-     * @return string
-     */
     public function getObtainer(): string
     {
         return $this->obtainer;
     }
 
-    /**
-     * @param string $obtainer
-     */
     public function setObtainer(string $obtainer): void
     {
         $this->obtainer = $obtainer;
     }
 
-    /**
-     * @return string
-     */
     public function getRenderer(): string
     {
         return $this->renderer;
     }
 
-    /**
-     * @param string $renderer
-     */
     public function setRenderer(string $renderer): void
     {
         $this->renderer = $renderer;
@@ -164,7 +129,7 @@ class Style
         return OptionsHelper::setOptions($this, $options);
     }
 
-    public static function resolvePreset($preset)
+    public static function resolvePreset($preset): array
     {
         if (is_array($preset)) {
             return $preset;
@@ -188,10 +153,7 @@ class Style
         return $preset;
     }
 
-    /**
-     * @return mixed
-     */
-    public static function getPresets()
+    public static function getPresets() : array
     {
         return self::$presets ?? self::$presets = self::PRESETS;
     }

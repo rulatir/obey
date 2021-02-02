@@ -3,6 +3,7 @@
 
 namespace Obey\Front;
 
+use Generator;
 use Obey\PathHelper as Path;
 use Obey\Traits\HasOptions;
 
@@ -48,6 +49,9 @@ class UnitEnumerator
         return $result;
     }
 
+    /**
+     * @return Generator|Unit[]
+     */
     public function all()
     {
         foreach ($this->unitGroups as $group) {

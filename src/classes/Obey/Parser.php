@@ -12,21 +12,16 @@ use Obey\Node\Text;
 
 class Parser
 {
-    /** @var Sequence|null */
-    protected $top;
+    protected ?Sequence $top;
 
     /** @var Sequence[]  */
-    protected $loci=[];
+    protected array $loci=[];
 
-    /** @var null|string  */
-    protected $debugInputFile = null;
+    protected ?string $debugInputFile = null;
 
-    protected static $instance = null;
+    protected static ?Parser $instance = null;
 
-    /**
-     * @var Obtainer
-     */
-    private $obtainer;
+    private Obtainer $obtainer;
 
     public function __construct(Obtainer $obtainer)
     {
@@ -161,25 +156,21 @@ class Parser
         return $this->top;
     }
 
-    /** @return Obtainer */
     public function getObtainer(): Obtainer
     {
         return $this->obtainer;
     }
 
-    /** @param Obtainer $obtainer */
     public function setObtainer(Obtainer $obtainer): void
     {
         $this->obtainer = $obtainer;
     }
 
-    /** @return string|null */
     public function getDebugInputFile(): ?string
     {
         return $this->debugInputFile;
     }
 
-    /** @param string|null $debugInputFile */
     public function setDebugInputFile(?string $debugInputFile): void
     {
         $this->debugInputFile = $debugInputFile;
