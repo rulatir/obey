@@ -17,6 +17,6 @@ abstract class Obtainer
         $this->req($fname, $once);
         return true;
     }
-    abstract public function req(string $fname);
+    abstract public function req(string $fname, bool $once=false);
     abstract public function exists(string $fname) : bool;
 }

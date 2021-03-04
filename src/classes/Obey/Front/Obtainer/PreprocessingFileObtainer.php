@@ -7,7 +7,7 @@ use Obey\Front\Obtainer;
 
 abstract class PreprocessingFileObtainer extends FileObtainer
 {
-    private $cache = [];
+    private array $cache = [];
 
     public function req(string $fname, bool $once = false)
     {
@@ -19,11 +19,11 @@ abstract class PreprocessingFileObtainer extends FileObtainer
         }
     }
 
-    protected function load($fname)
+    protected function load($fname) : string
     {
         return "data://text/plain;base64,".base64_encode($this->convert($fname));
     }
-    protected function convert($fname)
+    protected function convert($fname) : string
     {
         $result = [];
         $tokens = token_get_all(file_get_contents($fname));
@@ -40,8 +40,7 @@ abstract class PreprocessingFileObtainer extends FileObtainer
                 $result[] = $value;
             }
         }
-        $converted = implode("", $result);
-        return $converted;
+        return implode("", $result);
     }
 
     protected function beforeFile(): void

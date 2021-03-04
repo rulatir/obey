@@ -239,8 +239,12 @@ class Main
 
     protected function runInstance()
     {
+        if ('list-include-patterns'===$this->op) {
+            $this->listIncludePatterns();
+            return;
+        }
         if ('list-patterns'===$this->op) {
-            echo $this->formatList($this->inputs);
+            $this->listPatterns();
             return;
         }
         $inputRecorder = null;
@@ -328,6 +332,7 @@ class Main
             $this->generateOutputForUnit($unit, false);
             return;
         case "list-outputs":
+            xdebug_break();
             echo
                 PathHelper::unprefix($unit->getOutputFile(),$this->getListRelTo())
                 .($this->getOneLine() ? " " : PHP_EOL);
@@ -367,5 +372,30 @@ class Main
             OptionsHelper::setOptions($what, $this->options);
         }
         return $what;
+    }
+
+    protected function listIncludePatterns(): void
+    {
+        echo $this->formatList(
+            array_map(
+                fn($v) => PathHelper::unprefix(
+                        PathHelper::cat($this->options['rootDir'], $v),
+                        $this->getListRelTo()
+                    ) . '/**/*.php',
+                $this->importer->getImportPaths())
+        );
+    }
+
+    protected function listPatterns(): void
+    {
+        echo $this->formatList(
+            array_map(
+                fn($v) => PathHelper::unprefix(
+                    PathHelper::cat($this->options['rootDir'], $v),
+                    $this->getListRelTo()
+                ),
+                $this->inputs
+            )
+        );
     }
 }

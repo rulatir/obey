@@ -16,9 +16,9 @@ class InputRecorder extends Obtainer
         $this->obtainer = $obtainer;
     }
 
-    public function req(string $fname)
+    public function req(string $fname, bool $once=false)
     {
-        $this->obtainer->req($fname);
+        $this->obtainer->req($fname, $once);
         $this->recordInput($fname);
     }
 
