@@ -332,7 +332,6 @@ class Main
             $this->generateOutputForUnit($unit, false);
             return;
         case "list-outputs":
-            xdebug_break();
             echo
                 PathHelper::unprefix($unit->getOutputFile(),$this->getListRelTo())
                 .($this->getOneLine() ? " " : PHP_EOL);
