@@ -24,6 +24,7 @@ class CommandLine
         $me = new self($argv);
         return $me->parseArguments();
     }
+
     protected function parseArguments() : array
     {
         $options = [
@@ -39,6 +40,7 @@ class CommandLine
                 case '-n': $this->assign($options, 'outputNameTemplate'); break;
                 case '-s': $this->assign($options, 'style'); break;
                 case '--oneline': $options['oneline'] = true; break;
+                case '--quote': $options['quote'] = true; break;
                 default: trigger_error("Unsupported option {$opt}", E_USER_ERROR);
             }
         }

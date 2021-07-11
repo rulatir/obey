@@ -27,6 +27,7 @@ class Main
         'style',
         'op',
         'oneline',
+        'quote',
         'listRelTo'
     ];
 
@@ -52,6 +53,8 @@ class Main
     protected string $op;
 
     protected bool $oneLine;
+
+    protected bool $quote;
 
     protected ?string $listRelTo;
 
@@ -274,7 +277,7 @@ class Main
 
         if ('list-inputs'===$this->op) {
             $inputs = array_map(
-                fn($v) => PathHelper::unprefix($v, $this->getListRelTo()),
+                fn($v) => $this->applyQuotes(PathHelper::unprefix($v, $this->getListRelTo())),
                 $inputRecorder->getAllInputs()
             );
             echo $this->formatList($inputs);
@@ -294,6 +297,7 @@ class Main
         $defaults['style'] = 'smart';
         $defaults['op'] = 'process';
         $defaults['oneline'] = false;
+        $defaults['quote'] = false;
         $defaults['listRelTo'] = ".";
         return $defaults;
     }
@@ -333,7 +337,7 @@ class Main
             return;
         case "list-outputs":
             echo
-                PathHelper::unprefix($unit->getOutputFile(),$this->getListRelTo())
+                $this->applyQuotes(PathHelper::unprefix($unit->getOutputFile(), $this->getListRelTo()))
                 .($this->getOneLine() ? " " : PHP_EOL);
             return;
         default:
@@ -377,10 +381,10 @@ class Main
     {
         echo $this->formatList(
             array_map(
-                fn($v) => PathHelper::unprefix(
+                fn($v) => $this->applyQuotes(PathHelper::unprefix(
                         PathHelper::cat($this->options['rootDir'], $v),
                         $this->getListRelTo()
-                    ) . '/**/*.php',
+                    ) . '/**/*.php'),
                 $this->importer->getImportPaths())
         );
     }
@@ -389,12 +393,33 @@ class Main
     {
         echo $this->formatList(
             array_map(
-                fn($v) => PathHelper::unprefix(
+                fn($v) => $this->applyQuotes(PathHelper::unprefix(
                     PathHelper::cat($this->options['rootDir'], $v),
                     $this->getListRelTo()
-                ),
+                )),
                 $this->inputs
             )
         );
+    }
+
+    public function applyQuotes(string $item) : string
+    {
+        return $this->getQuote() ? str_replace(['*','?',' '],["\\".'*',"\\".'?',"\\".' '],$item) : $item;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getQuote(): bool
+    {
+        return $this->quote;
+    }
+
+    /**
+     * @param bool $quote
+     */
+    public function setQuote(bool $quote): void
+    {
+        $this->quote = $quote;
     }
 }
