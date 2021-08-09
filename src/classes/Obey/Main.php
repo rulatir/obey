@@ -242,14 +242,6 @@ class Main
 
     protected function runInstance()
     {
-        if ('list-include-patterns'===$this->op) {
-            $this->listIncludePatterns();
-            return;
-        }
-        if ('list-patterns'===$this->op) {
-            $this->listPatterns();
-            return;
-        }
         $inputRecorder = null;
         $this->setObtainer(new $this->style['obtainer']());
         if ('list-inputs'===$this->op) {
@@ -258,6 +250,16 @@ class Main
         $this->setImporter(new Importer($this->getObtainer()));
         $this->setParser(new Parser($this->obtainer));
         $this->setRenderer(new $this->style['renderer']());
+
+        if ('list-include-patterns'===$this->op) {
+            $this->listIncludePatterns();
+            return;
+        }
+
+        if ('list-patterns'===$this->op) {
+            $this->listPatterns();
+            return;
+        }
 
         /** @var UnitEnumerator $enumerator */
         $enumerator = $this->passOptionsTo(new UnitEnumerator());
